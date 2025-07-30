@@ -1,1 +1,49 @@
-{}
+{
+  "Riverside": {
+    "location": {
+      "name": "Riverside",
+      "region": "California",
+      "country": "United States of America",
+      "lat": 33.9533,
+      "lon": -117.3953,
+      "tz_id": "America/Los_Angeles",
+      "localtime_epoch": 1753836894,
+      "localtime": "2025-07-29 17:54"
+    },
+    "current": {
+      "last_updated_epoch": 1753836300,
+      "last_updated": "2025-07-29 17:45",
+      "temp_c": 32.4,
+      "temp_f": 90.3,
+      "is_day": 1,
+      "condition": {
+        "text": "Sunny",
+        "icon": "//cdn.weatherapi.com/weather/64x64/day/113.png",
+        "code": 1000
+      },
+      "wind_mph": 11.9,
+      "wind_kph": 19.1,
+      "wind_degree": 268,
+      "wind_dir": "W",
+      "pressure_mb": 1013.0,
+      "pressure_in": 29.93,
+      "precip_mm": 0.0,
+      "precip_in": 0.0,
+      "humidity": 31,
+      "cloud": 0,
+      "feelslike_c": 32.1,
+      "feelslike_f": 89.7,
+      "windchill_c": 32.4,
+      "windchill_f": 90.3,
+      "heatindex_c": 32.1,
+      "heatindex_f": 89.7,
+      "dewpoint_c": 12.8,
+      "dewpoint_f": 55.0,
+      "vis_km": 10.0,
+      "vis_miles": 6.0,
+      "uv": 2.6,
+      "gust_mph": 13.6,
+      "gust_kph": 22.0
+    }
+  }
+}
