@@ -18,10 +18,10 @@ console = Console() #using rich to output it nicely
 
 #async function that sends a request to the weather API 
 async def fetch_weather(session, city):
-    # url = "ADD URL HERE SURROUNDED BY THE QUOTATION MAKRS"
+    url = "https://api.weatherapi.com/v1/current.json"
     params = {
-      # ADD THE PARAMETERS HERE
-    # optionally add other params like 'aqi': 'yes' if you want air quality data
+      "key": API_KEY,
+      "q": city,
     }
     async with session.get(url, params=params) as response: #sends a GET request
         if response.status == 200:
@@ -30,7 +30,7 @@ async def fetch_weather(session, city):
             console.print(f"[red]Error fetching data for {city}: {response.status}[/red]")
             return None
 
-#checks if chach file exists 
+#checks if cache file exists 
 def load_cache():
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, "r") as f:
@@ -43,7 +43,7 @@ def save_cache(cache):
         json.dump(cache, f, indent=2)
 
 async def main(cities):
-    cache = load_cache() #loads any chached weather data
+    cache = load_cache() #loads any cached weather data
     results = {} #creates an empty dictionary to store results 
     #start async tasks
     async with aiohttp.ClientSession() as session:
@@ -51,10 +51,11 @@ async def main(cities):
         for city in cities:
             # Use cache if available
             if city in cache:
-                # ADD CITY CACHE TO RESULTS
+                results[city] = cache[city]
                 break
             else:
-                # ADD THE TASK TO TASKS 
+                tasks.append(fetch_weather(session, city))
+                uncached_cities.append(city)
                 break
         # Run async tasks concurrently
         responses = await asyncio.gather(*tasks) #runs all the fetches at same time
@@ -66,21 +67,39 @@ async def main(cities):
                 cache[city] = data
         save_cache(cache)
 
+
     # Pretty print results using rich 
     table = Table(title="Weather")
-    #ADD THE COLUMNS HERE WITH THEIR TITLE AND COLOR
+    table.add_column("City", style="blue")
+    table.add_column("Day", style="cyan")
 
-    #extracts info from the JSON
+    # Color based on temp
     for city, data in results.items():
-        temp = str(data["current"]["temp_c"])
+        tempInt = (data["current"]["temp_f"])
+    if(tempInt >= 90):
+        table.add_column("Temperature (F°)", style="red")
+    elif(tempInt >= 70):
+        table.add_column("Temperature (F°)", style="yellow")
+    elif(tempInt >= 50):
+        table.add_column("Temperature (F°)", style="green")
+    else:
+        table.add_column("Temperature (F°)", style="blue")
+
+    table.add_column("Weather Conditions", style="green")
+    table.add_column("Humidity", style="green")
+    table.add_column("UV Index", style="green")
+
+    #extracts data from the JSON
+    for city, data in results.items():
+        day = str(data["current"]["is_day"])
+        temp = str(data["current"]["temp_f"])
         weather = data["current"]["condition"]["text"]
         humidity = str(data["current"]["humidity"])
-        table.add_row(city, temp, weather, humidity)
-        #WHEN YOU GET HERE!! - privately message one of the instuctors:
-          #here is what lines 75-79 mean....your response :) 
-          #if you dont know...ask us
+        uv = str(data["current"]["uv"])
+        table.add_row(city, day, temp, weather, humidity, uv)
 
     console.print(table)
+
 
 #running the program 
 #checks if script is being run directly
